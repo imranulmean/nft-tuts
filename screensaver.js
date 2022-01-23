@@ -693,6 +693,7 @@ function createRecorder (stream, mimeType) {
   return mediaRecorder;
 }
 
+let fileNameCount=0;
 function saveFile(recordedChunks){
 
    // const blob = new Blob(recordedChunks, {
@@ -705,7 +706,8 @@ function saveFile(recordedChunks){
         downloadLink = document.createElement('a');
     downloadLink.href = URL.createObjectURL(blob);
     // downloadLink.download = `${filename}.webm`; 
-    downloadLink.download = `nft1.webm`; 
+    fileNameCount+=1;
+    downloadLink.download = `nft${fileNameCount}.webm`; 
     console.log(downloadLink);
     document.body.appendChild(downloadLink);
     downloadLink.click();
