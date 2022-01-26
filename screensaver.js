@@ -13,9 +13,8 @@ function clearGrid() {
   nodes = {};
 }
 
-
-  console.log('Initial Recording Start');
-  recordingStart();
+console.log("Initial Recording Start");
+recordingStart();
 var textures = {};
 var Pipe = function(scene, options) {
   var self = this;
@@ -217,7 +216,6 @@ var Pipe = function(scene, options) {
     // self.mesh = new THREE.Mesh(tubeGeometry, self.material);
     // self.object3d.add(self.mesh);
   };
-
 };
 
 var JOINTS_ELBOW = "elbow";
@@ -315,7 +313,7 @@ function finishDissolve() {
   dissolveRects = [];
   dissolveRectsIndex = -1;
   ctx2d.clearRect(0, 0, canvas2d.width, canvas2d.height);
-console.log('Repeat Recording');
+  console.log("Repeat Recording");
   recordingStart();
 }
 
@@ -328,14 +326,12 @@ function clear(fast) {
     random(options.interval[0], options.interval[1]) * 1000
   );
   if (!clearing) {
-    
     clearing = true;
     var fadeOutTime = fast ? 0.2 : 2;
     dissolve(fadeOutTime, reset);
-    console.log('Recording Stopped');
-    recordingStop();    
+    console.log("Recording Stopped");
+    recordingStop();
   }
-  
 }
 clearTID = setTimeout(
   clear,
@@ -343,7 +339,6 @@ clearTID = setTimeout(
 );
 
 function reset() {
-
   renderer.clear();
   for (var i = 0; i < pipes.length; i++) {
     scene.remove(pipes[i].object3d);
@@ -551,7 +546,12 @@ function updateFromParametersInURL() {
         params = null;
       }
     } catch (error) {
-      alert("Invalid URL parameter JSON syntax\n\n" + error + "\n\nRecieved:\n" + paramsJSON);
+      alert(
+        "Invalid URL parameter JSON syntax\n\n" +
+          error +
+          "\n\nRecieved:\n" +
+          paramsJSON
+      );
     }
   }
   params = params || {};
@@ -607,110 +607,101 @@ function showElementsIf(selector, condition) {
   });
 }
 
-
 // ------------------------------------------------------
 
-let start = document.getElementById('start'),
-    stop  = document.getElementById('stop');
- var stream=null;
+let start = document.getElementById("start"),
+  stop = document.getElementById("stop");
+var stream = null;
 
- async function recordingStart(){
-   
-    if(!stream){
-       stream = await recordScreen();  
-    }
-     console.log(stream);
-    let mimeType = 'video/webm';
-    mediaRecorder = createRecorder(stream, mimeType);  
+async function recordingStart() {
+  if (!stream) {
+    stream = await recordScreen();
+  }
+  console.log(stream);
+  let mimeType = "video/webm";
+  mediaRecorder = createRecorder(stream, mimeType);
 
-    
-    console.log(mediaRecorder);
-   let node = document.createElement("p");
-    //node.textContent = "Started recording";
-    node.textContent = "";
-    document.body.appendChild(node);
-  
+  console.log(mediaRecorder);
+  let node = document.createElement("p");
+  //node.textContent = "Started recording";
+  node.textContent = "";
+  document.body.appendChild(node);
 }
 
-function recordingStop(){
-    mediaRecorder.stop();
-    let node = document.createElement("p");
-    // node.textContent = "Stopped recording";
-    node.textContent = "";
-    document.body.appendChild(node);  
+function recordingStop() {
+  mediaRecorder.stop();
+  let node = document.createElement("p");
+  // node.textContent = "Stopped recording";
+  node.textContent = "";
+  document.body.appendChild(node);
 }
 
-
-start.addEventListener('click', async function(){
+start.addEventListener("click", async function() {
   // console.log('recording started');
-    
   //   if(!stream){
-  //      stream = await recordScreen();  
+  //      stream = await recordScreen();
   //   }
   //    console.log(stream);
   //   let mimeType = 'video/webm';
-  //   mediaRecorder = createRecorder(stream, mimeType);  
-
-    
+  //   mediaRecorder = createRecorder(stream, mimeType);
   //   console.log(mediaRecorder);
   //  let node = document.createElement("p");
   //   node.textContent = "Started recording";
   //   document.body.appendChild(node);
-})
+});
 
-stop.addEventListener('click', function(){
-    // mediaRecorder.stop();
-    //  console.log('recording Stopped');
-    // console.log(mediaRecorder);
-    // let node = document.createElement("p");
-    // node.textContent = "Stopped recording";
-    // document.body.appendChild(node);
-})
+stop.addEventListener("click", function() {
+  // mediaRecorder.stop();
+  //  console.log('recording Stopped');
+  // console.log(mediaRecorder);
+  // let node = document.createElement("p");
+  // node.textContent = "Stopped recording";
+  // document.body.appendChild(node);
+});
 
 async function recordScreen() {
-    return await navigator.mediaDevices.getDisplayMedia({
-        audio: true, 
-        video: { mediaSource: "screen"}
-    });
+  return await navigator.mediaDevices.getDisplayMedia({
+    audio: true,
+    video: { mediaSource: "screen" },
+  });
 }
 
-function createRecorder (stream, mimeType) {
+function createRecorder(stream, mimeType) {
   // the stream data is stored in this array
-  let recordedChunks = []; 
+  let recordedChunks = [];
 
   const mediaRecorder = new MediaRecorder(stream);
 
-  mediaRecorder.ondataavailable = function (e) {
+  mediaRecorder.ondataavailable = function(e) {
     if (e.data.size > 0) {
       recordedChunks.push(e.data);
-    }  
+    }
   };
-  mediaRecorder.onstop = function () {
-     saveFile(recordedChunks);
-     recordedChunks = [];
+  mediaRecorder.onstop = function() {
+    saveFile(recordedChunks);
+    recordedChunks = [];
   };
   mediaRecorder.start(200); // For every 200ms the stream data will be stored in a separate chunk.
   return mediaRecorder;
 }
 
-let fileNameCount=0;
-function saveFile(recordedChunks){
-
-   // const blob = new Blob(recordedChunks, {
-   //    type: 'video/webm'
-   //  });
-   const blob = new Blob(recordedChunks, {
-      type: 'video/webm'
-    });   
-    //let filename = window.prompt('Enter file name'),
-        downloadLink = document.createElement('a');
-    downloadLink.href = URL.createObjectURL(blob);
-    // downloadLink.download = `${filename}.webm`; 
-    fileNameCount+=1;
-    downloadLink.download = `nft${fileNameCount}.webm`; 
-    console.log(downloadLink);
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
-    URL.revokeObjectURL(blob); // clear from memory
-    document.body.removeChild(downloadLink);
+let fileNameCount = 169;
+function saveFile(recordedChunks) {
+  // const blob = new Blob(recordedChunks, {
+  //    type: 'video/webm'
+  //  });
+  const blob = new Blob(recordedChunks, {
+    type: "video/webm",
+  });
+  //let filename = window.prompt('Enter file name'),
+  downloadLink = document.createElement("a");
+  downloadLink.href = URL.createObjectURL(blob);
+  // downloadLink.download = `${filename}.webm`;
+  fileNameCount += 1;
+  downloadLink.download = `nft${fileNameCount}.webm`;
+  console.log(downloadLink);
+  document.body.appendChild(downloadLink);
+  downloadLink.click();
+  URL.revokeObjectURL(blob); // clear from memory
+  document.body.removeChild(downloadLink);
 }
